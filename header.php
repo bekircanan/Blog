@@ -1,3 +1,19 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL); 
+try{
+    $conn = new PDO("mysql:host=localhost;dbname=blog", 'root', '');
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}catch(PDOException $e){
+    die($e->getMessage());
+}catch (Exception $e){
+    die($e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,7 +28,7 @@
             <h1>Bolg</h1>
             <nav>
                 <ul>
-                    <li><a href="login.php">Login</a></li>
+                    <li><a href="">Login</a></li>
                 </ul>
             </nav>
         </div>
