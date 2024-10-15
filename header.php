@@ -4,14 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL); 
-try{
-    $conn = new PDO("mysql:host=localhost;dbname=blog", 'root', '');
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}catch(PDOException $e){
-    die($e->getMessage());
-}catch (Exception $e){
-    die($e->getMessage());
+error_reporting(E_ALL);
+if (!isset($_SESSION['user']) && basename($_SERVER['PHP_SELF']) !== 'login.php') {
+    header('Location: login.php');
+    exit();
 }
 ?>
 <!DOCTYPE html>
