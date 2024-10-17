@@ -1,17 +1,9 @@
 <?php
-    require_once 'header.php';
-    try {
-        $conn = new PDO("mysql:host=localhost;dbname=blog", 'root', '');
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch(PDOException $e) {
-        die($e->getMessage());
-    } catch (Exception $e) {
-        die($e->getMessage());
-    }
+    require 'header.php';
     echo "<div class='login-container'>";
     echo "<h2>Page de Connexion</h2>";
-    // pour choisir le formulaire à afficher
     $form = false;
+    // regarde si la méthode de requête est POST
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // regarde si les champs pseudo et mdp sont remplis
         if (isset($_POST['pseudo']) && isset($_POST['mdp'])&& !isset($_POST['email'])) {
@@ -21,9 +13,9 @@
             $user = $stmt->fetch();
             // regarde si l'utilisateur existe et si le mot de passe est correct
             if ($user) {
-                $mdp = $_POST['mdp']===$user['mdp'];
-                if($mdp){
+                if($_POST['mdp']===$user['mdp']){
                     $_SESSION['user'] = $user['pseudo'];
+                    $_SESSION['email'] = $user['email'];
                     header('Location: index.php');
                     exit();
                 }else{
@@ -33,6 +25,7 @@
                 echo "<p>Utilisateur non trouvé. Veuillez fournir votre adresse Email pour créer un compte.</p>";
                 $form = true;
             }
+        // regarde si les champs pseudo, mdp et email sont remplis
         } elseif (isset($_POST['email']) && isset($_POST['pseudo']) && isset($_POST['mdp'])) {
             $stmt = $conn->prepare("SELECT * FROM user WHERE email = :email");
             $stmt->bindParam(':email', $_POST['email']);
