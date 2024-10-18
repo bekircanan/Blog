@@ -14,7 +14,7 @@
             $article = $stmt->fetch();
             $article['total']++;
             $stmt = $conn->prepare("INSERT INTO article (idarticle,contenu, titre, idUser) VALUES (:idarticle, :contenu, :titre, :user)");
-            $stmt->bindParam(':idarticle', $article['idArticle']);
+            $stmt->bindParam(':idarticle', $article['total']);
             $stmt->bindParam(':contenu', $_POST['contenu']);
             $stmt->bindParam(':titre', $_POST['titre']);
             $stmt->bindParam(':user', $user['idUser']);
@@ -22,7 +22,7 @@
             foreach($_POST['categorie'] as $categorie){
                 $stmt = $conn->prepare("INSERT INTO article_categorie (idCategorie,idArticle) VALUES (?, ?)");
                 $stmt->bindParam(1, $categorie);
-                $stmt->bindParam(2, $article['idArticle']);
+                $stmt->bindParam(2, $article['total']);
                 $stmt->execute();
             }
             header('Location: index.php');
