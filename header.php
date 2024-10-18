@@ -34,8 +34,8 @@
     <header>
         <div class="container">
             <a href="index.php"><h1>Bolg</h1></a>
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']==="admin" && $_SESSION['email']==="admin@localhost.fr"){
-                echo '<a href="CRUD.php">CRUD</a>';
+            <?php if (isset($_SESSION['user'])){
+                echo '<a href="logout.php">Déconnexion</a>';
             } ?>
             <a href="new.php">créer un article</a>
         </div>

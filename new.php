@@ -2,26 +2,31 @@
     require_once 'header.php';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['categorie'])) {
-            echo "cat".$_POST['categorie[1]'];
-            echo "cat".$_POST['categorie'];
-            /*
+            foreach ($_POST['categorie'] as $categorie) {
+                echo "cat".$categorie;
+            }
             $stmt = $conn->prepare("SELECT idUser FROM user WHERE pseudo = :pseudo");
             $stmt->bindParam(':pseudo', $_SESSION['user']);
             $stmt->execute();
-            $result = $stmt->fetch();
-            $stmt = $conn->prepare("SELECT idArticle FROM article");
+            $user = $stmt->fetch();
+            $stmt = $conn->prepare("SELECT count(idArticle) total FROM article");
             $stmt->execute();
             $article = $stmt->fetch();
-            $article['idArticle']++;
-            $stmt = $conn->prepare("INSERT INTO article (idarticle,contenu, categorie, titre, idUser) VALUES (:idarticle, :contenu, :categorie, :titre, :user)");
+            $article['total']++;
+            $stmt = $conn->prepare("INSERT INTO article (idarticle,contenu, titre, idUser) VALUES (:idarticle, :contenu, :titre, :user)");
             $stmt->bindParam(':idarticle', $article['idArticle']);
             $stmt->bindParam(':contenu', $_POST['contenu']);
             $stmt->bindParam(':titre', $_POST['titre']);
-            $stmt->bindParam(':user', $result['idUser']);
+            $stmt->bindParam(':user', $user['idUser']);
             $stmt->execute();
+            foreach($_POST['categorie'] as $categorie){
+                $stmt = $conn->prepare("INSERT INTO article_categorie (idCategorie,idArticle) VALUES (?, ?)");
+                $stmt->bindParam(1, $categorie);
+                $stmt->bindParam(2, $article['idArticle']);
+                $stmt->execute();
+            }
             header('Location: index.php');
             exit();
-            */
         }else{
             $error = 'Veuillez remplir tous les champs du formulaire.';
         }
