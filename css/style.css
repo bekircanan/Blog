@@ -23,7 +23,7 @@ header .container, footer .container {
     justify-content: space-between;
     align-items: center;
 }
-h1, h2{
+h1{
     margin: 0;
 }
 a {
@@ -144,10 +144,9 @@ form input[type="submit"]:hover {
 }
 
 .resultat_recherche h2{ /*titre*/
-
     grid-column: 1;
     grid-row: 1;
-    color: red;
+    margin: 0;
 }
 
 .resultat_recherche p:nth-of-type(1){   /*date*/

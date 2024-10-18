@@ -25,7 +25,7 @@ require_once 'header.php';
             foreach($article as $art){
                 echo '<div class="resultat_recherche">'; 
                 echo '<h2>' . $art['titre'] . '</h2>';
-                echo '<p>Date de publication : ' . $art['datepub'] . '</p>';
+                echo '<p>Publié le ' . $art['datepub'] . '</p>';
                 echo '<p>' . $art['contenu'] . '...</p>';
                 echo '<p>by ' . $art['pseudo'] . '</p>';
                 echo '</div>';  
