@@ -1,7 +1,9 @@
 <?php
     require_once 'header.php';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['categorie'])) {
+        if(strlen($_POST['titre'])>50){
+            $error = 'Le titre doit contenir moins de 50 caractères.';
+        }elseif (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['categorie'])) {
             foreach ($_POST['categorie'] as $categorie) {
                 echo "cat".$categorie;
             }
@@ -9,20 +11,16 @@
             $stmt->bindParam(':pseudo', $_SESSION['user']);
             $stmt->execute();
             $user = $stmt->fetch();
-            $stmt = $conn->prepare("SELECT count(idArticle) total FROM article");
-            $stmt->execute();
-            $article = $stmt->fetch();
-            $article['total']++;
-            $stmt = $conn->prepare("INSERT INTO article (idarticle,contenu, titre, idUser) VALUES (:idarticle, :contenu, :titre, :user)");
-            $stmt->bindParam(':idarticle', $article['total']);
+            $stmt = $conn->prepare("INSERT INTO article (contenu, titre, idUser) VALUES ( :contenu, :titre, :user)");
             $stmt->bindParam(':contenu', $_POST['contenu']);
             $stmt->bindParam(':titre', $_POST['titre']);
             $stmt->bindParam(':user', $user['idUser']);
             $stmt->execute();
+            $id = $conn->lastInsertId();
             foreach($_POST['categorie'] as $categorie){
                 $stmt = $conn->prepare("INSERT INTO article_categorie (idCategorie,idArticle) VALUES (?, ?)");
                 $stmt->bindParam(1, $categorie);
-                $stmt->bindParam(2, $article['total']);
+                $stmt->bindParam(2, $id);
                 $stmt->execute();
             }
             header('Location: index.php');
@@ -39,10 +37,10 @@
         <p style="color: red;font-weight: bold;"><?php echo $error; ?></p>
     <?php endif; ?>
     <label for="titre">Titre:</label>
-    <input type="text" id="titre" name="titre" required><br><br>
+    <input type="text" id="titre" name="titre" maxlength="50" value="<?php echo (isset($_POST['titre']) && !empty($_POST['titre'])? $_POST['titre'] : "" ) ?>" required><br><br>
     
     <label for="contenu">contenu:</label>
-    <textarea id="contenu" name="contenu" rows="10" required></textarea><br><br>
+    <textarea id="contenu" name="contenu" rows="10" required><?php echo (isset($_POST['contenu']) && !empty($_POST['contenu'])? $_POST['contenu'] : "" ) ?></textarea><br><br>
     
     <div>
         <label for="categorie">Catégorie:</label>
