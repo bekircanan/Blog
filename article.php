@@ -2,8 +2,58 @@
 require_once 'header.php';
 $idComment=0;
 
+
+$stmtSelectMaxIdComm = $conn->prepare(
+    "SELECT max(id_com) as max_id_com from commentaire"
+);
+$stmtInsertCommentaire = $conn->prepare(
+    "INSERT INTO commentaire (message, idUser, idArticle) VALUES ( ?, ?, ?)"
+);
+$stmtInsertCommentaire->bindParam(1,$new_comment);
+$stmtInsertCommentaire->bindParam(2,$idUserComment);
+$stmtInsertCommentaire->bindParam(3,$idArticle);
+
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    
+    if (!empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment'])){
+        
+        $new_comment = $_POST['new_comment'];
+        $idArticle = $_SESSION['idArticleActuel'];
+        settype($_SESSION['idUser'], "integer");
+        $idUserComment = $_SESSION['idUser'];
+        $stmtInsertCommentaire->execute();
+        header("Location: article.php?idArticle=1");
+        exit;
+    }
+    elseif(empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment'])){
+        echo "Renseignez d'abord un commentaire.";
+    }
+    elseif(!isset($_POST['suppr_comment'])){
+        $stmtDeleteArticle = $conn->prepare(
+            "DELETE FROM article WHERE idArticle = {$_SESSION['idArticleActuel']}"
+        );
+        $stmtDeleteArticle->execute();
+        unset($_POST['suppr_article']);
+        header("Location: index.php");
+        exit;
+    }
+    else{
+        $idComment = $_POST['suppr_comment'];
+        $stmtDeleteComment= $conn->prepare(
+            "DELETE FROM commentaire WHERE id_com = {$idComment}"
+        );
+        $stmtDeleteComment->execute();
+        header("Location: article.php?idArticle=1");
+        exit;
+    }
+}
+elseif($_SERVER['REQUEST_METHOD'] == 'GET'){
+    $_SESSION['idArticleActuel'] = $_GET['idArticle'];
+}
+
+
 $stmtSelectArticle = $conn->prepare(
-    "SELECT * from article where idArticle = {$_GET['idArticle']}"
+    "SELECT * from article where idArticle = {$_SESSION['idArticleActuel']}"
 );
 $stmtSelectArticle->execute();
 foreach($stmtSelectArticle as $rows){
@@ -18,67 +68,22 @@ $stmtSelectUserArticle = $conn->prepare(
     "SELECT * from user where iduser = {$idUser}"
 );
 $stmtSelectUserArticle->execute();
-
 foreach($stmtSelectUserArticle as $rows){
     $mail = $rows['email'];
     $pseudo = $rows['pseudo'];
 }
 
 $stmtSelectAllComment = $conn->prepare(
-    "SELECT * FROM commentaire WHERE idArticle = {$_GET['idArticle']}"
-);
-$stmtSelectUserComment = $conn->prepare(
-    "SELECT * from user where iduser = {$idUser}"
-);
-$stmtSelectMaxIdComm = $conn->prepare(
-    "SELECT max(id_com) as max_id_com from commentaire"
-);
-$stmtInsertCommentaire = $conn->prepare(
-    "INSERT INTO commentaire (id_com, message, idUser, idArticle) VALUES (?, ?, ?, ?)"
-);
-$stmtInsertCommentaire->bindParam(1,$id_com);
-$stmtInsertCommentaire->bindParam(2,$new_comment);
-$stmtInsertCommentaire->bindParam(3,$_SESSION['idUser']);
-$stmtInsertCommentaire->bindParam(4,$idArticle);
-
-$stmtDeleteArticle = $conn->prepare(
-    "DELETE FROM article WHERE idArticle = {$_GET['idArticle']}"
+    "SELECT * FROM commentaire WHERE idArticle = {$_SESSION['idArticleActuel']} order by date desc"
 );
 
 
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    
-    if (!empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment'])){
-        $stmtSelectMaxIdComm->execute();
-        $row = $stmtSelectMaxIdComm->fetch();
-        $id_com = $row['max_id_com'] + 1 ;
-        $new_comment = $_POST['new_comment'];
-        $idArticle = $_SESSION['idArticle'];
-        $stmtInsertCommentaire->execute();
-        $_POST['new_comment']="";
-    }
-    elseif(empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment'])){
-        echo "Renseignez d'abord un commentaire.";
-    }
-    elseif(!isset($_POST['suppr_comment'])){
-        $stmtDeleteArticle->execute();
-        unset($_POST['suppr_article']);
-        header("Location: index.php");
-        exit;
-    }
-    else{
-        $idComment = $_POST['suppr_comment'];
-        $stmtDeleteComment->execute();
-    }
-}
-elseif($_SERVER['REQUEST_METHOD'] == 'GET'){
 
-}
 
-$stmtDeleteComment= $conn->prepare(
-    "DELETE FROM commentaire WHERE id_com = {$idComment}"
-);
+
+
+
 
 
 
@@ -97,14 +102,11 @@ $stmtDeleteComment= $conn->prepare(
         <?php
         $stmtSelectAllComment->execute();
         foreach ($stmtSelectAllComment as $rows){
-            $idUser = $rows['idUser'];
-            echo $idUser."<br>";
-            $stmtSelectUserComment->execute();
-            foreach($stmtSelectUserComment as $rows2){
-                $pseudo2 = $rows2['pseudo'];
-            }
-            
-
+            $_SESSION['idUserComment'] = $rows['idUser'];
+            $sql = "SELECT * from user where iduser = {$_SESSION['idUserComment']}";
+            $result = $conn->query($sql);
+            $row2 = $result->fetch();
+            $pseudo2 = $row2['pseudo'];
             echo $pseudo2."<br>".$rows['date']."<br>";
             echo $rows['message']."<br>";
             if($pseudo2 === $_SESSION['user']){
