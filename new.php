@@ -1,12 +1,17 @@
 <?php
     require_once 'header.php';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (empty($_POST['titre']) && empty($_POST['contenu']) && empty($_POST['categorie'])) {
+        if (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['categorie'])) {
             $stmt = $conn->prepare("SELECT idUser FROM user WHERE pseudo = :pseudo");
             $stmt->bindParam(':pseudo', $_SESSION['user']);
             $stmt->execute();
             $result = $stmt->fetch();
-            $stmt = $conn->prepare("INSERT INTO article (contenu, categorie, titre, idUser) VALUES (:contenu, :categorie, :titre, :user)");
+            $stmt = $conn->prepare("SELECT idArticle FROM article");
+            $stmt->execute();
+            $article = $stmt->fetch();
+            $article['idArticle']++;
+            $stmt = $conn->prepare("INSERT INTO article (idarticle,contenu, categorie, titre, idUser) VALUES (:idarticle, :contenu, :categorie, :titre, :user)");
+            $stmt->bindParam(':idarticle', $article['idArticle']);
             $stmt->bindParam(':contenu', $_POST['contenu']);
             $stmt->bindParam(':categorie', $_POST['categorie']);
             $stmt->bindParam(':titre', $_POST['titre']);

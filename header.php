@@ -13,11 +13,11 @@
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
-    if (!isset($_SESSION['user']) && basename($_SERVER['PHP_SELF']) !== 'login.php') {
+    if ((!isset($_SESSION['user']) && empty($_SESSION['user'])) && basename($_SERVER['PHP_SELF']) !== 'login.php') {
         header('Location: login.php');
         exit();
     }
-    if (basename($_SERVER['PHP_SELF']) === 'crud.php' && (!isset($_SESSION['email']) || $_SESSION['email'] !== 'admin@localhost.fr')) {
+    if (basename($_SERVER['PHP_SELF']) === 'crud.php' && !isset($_SESSION['email']) && $_SESSION['email'] !== 'admin@localhost.fr' && $_SESSION['admin'] !== 1) {
         header('Location: index.php');
         exit();
     }

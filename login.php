@@ -16,6 +16,8 @@
                 if($_POST['mdp']===$user['mdp']){
                     $_SESSION['user'] = $user['pseudo'];
                     $_SESSION['email'] = $user['email'];
+                    $_SESSION['admin'] = $user['admin'];
+                    $_SESSION['idUser'] = $user['idUser'];
                     header('Location: index.php');
                     exit();
                 }else{
@@ -35,7 +37,12 @@
             if ($email) {
                 echo "<p>L'adresse Email est déjà utilisée. Veuillez réessayer avec une autre adresse ou vous connecter.</p>";
             } else {
-                $stmt = $conn->prepare("INSERT INTO user (pseudo, mdp, email, admin) VALUES (:pseudo, :mdp, :email, 0)");
+                $stmt = $conn->prepare("SELECT count(idUser) total FROM user");
+                $stmt->execute();
+                $iduser = $stmt->fetch();
+                $iduser['total']++;
+                $stmt = $conn->prepare("INSERT INTO user (idUser,pseudo, mdp, email, admin) VALUES (:iduser,:pseudo, :mdp, :email, 0)");
+                $stmt->bindParam(':iduser', $iduser['total']);
                 $stmt->bindParam(':pseudo', $_POST['pseudo']);
                 $stmt->bindParam(':mdp', $_POST['mdp']);
                 $stmt->bindParam(':email', $_POST['email']);
