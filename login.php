@@ -47,8 +47,8 @@
                 $stmt->bindParam(':mdp', $_POST['mdp']);
                 $stmt->bindParam(':email', $_POST['email']);
                 $stmt->execute();
-                $_SESSION['user'] = $_POST['pseudo'];
-                header('Location: index.php');
+                unset($_POST['email']);
+                header('Location: login.php');
                 exit();
             }
         } else {

@@ -2,6 +2,9 @@
     require_once 'header.php';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['categorie'])) {
+            echo "cat".$_POST['categorie[1]'];
+            echo "cat".$_POST['categorie'];
+            /*
             $stmt = $conn->prepare("SELECT idUser FROM user WHERE pseudo = :pseudo");
             $stmt->bindParam(':pseudo', $_SESSION['user']);
             $stmt->execute();
@@ -13,12 +16,12 @@
             $stmt = $conn->prepare("INSERT INTO article (idarticle,contenu, categorie, titre, idUser) VALUES (:idarticle, :contenu, :categorie, :titre, :user)");
             $stmt->bindParam(':idarticle', $article['idArticle']);
             $stmt->bindParam(':contenu', $_POST['contenu']);
-            $stmt->bindParam(':categorie', $_POST['categorie']);
             $stmt->bindParam(':titre', $_POST['titre']);
             $stmt->bindParam(':user', $result['idUser']);
             $stmt->execute();
             header('Location: index.php');
             exit();
+            */
         }else{
             $error = 'Veuillez remplir tous les champs du formulaire.';
         }
@@ -36,9 +39,17 @@
     <label for="contenu">contenu:</label>
     <textarea id="contenu" name="contenu" rows="10" required></textarea><br><br>
     
-    <label for="categories">Categories:</label>
-    <input type="text" id="categorie" name="categorie" required><br><br>
-    
+    <div>
+        <label for="categorie">Catégorie:</label>
+    <?php
+        $stmt = $conn->prepare("SELECT * FROM categorie");
+        $stmt->execute();
+        $categories = $stmt->fetchAll();
+        foreach ($categories as $categorie) {
+            echo '<input type="checkbox" id="'.$categorie['idCategorie'].'" name="categorie[]" value="'.$categorie['idCategorie'].'">'.$categorie['nomCategorie'].'</input>';
+        }
+    ?>
+    </div>
     <input type="submit" value="Submit">
 </form>
 <?php
