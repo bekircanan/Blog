@@ -77,27 +77,15 @@ $stmtSelectAllComment = $conn->prepare(
     "SELECT * FROM commentaire WHERE idArticle = {$_SESSION['idArticleActuel']} order by date desc"
 );
 
-
-
-
-
-
-
-
-
-
-
 ?>
 
-<html>
-    <body>
+    <div class="info_article">
         <h1><?php echo $titre?></h1>
-        <p><?php echo $contenu?></p>
-        
         Auteur : <?php echo $pseudo?> <br>
         Mail : <?php echo $mail?> <br>
         Date : <?php echo $date?> <br>
-
+    </div> 
+        <p><?php echo $contenu?></p>
         Commentaires : <br>
         <?php
         $stmtSelectAllComment->execute();
@@ -132,11 +120,6 @@ $stmtSelectAllComment = $conn->prepare(
         }
         ?>
 
-    </body>
-
-</html>
-
-
-
+   
 
 

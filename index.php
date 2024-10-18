@@ -16,13 +16,31 @@ require_once 'header.php';
                                                JOIN categorie c ON ac.idCategorie = ac.idCategorie
                                 WHERE u.pseudo LIKE :pseudo 
                                 OR a.titre LIKE :titre
-                                OR c.nomCategorie LIKE :categorie");
+                                OR c.nomCategorie LIKE :categorie order by a.datepub asc");
         
         $stmt->execute([':pseudo' => '%' . $_GET['recherche']. '%',
                         ':titre' => '%' . $_GET['recherche']. '%',
                         ':categorie' => '%' . $_GET['recherche']. '%']);
         $article = $stmt->fetchAll();
 
+        if(!empty($article)){
+            foreach($article as $art){
+                echo '<div class="resultat_recherche"><a href="./article.php?idArticle=' . $art['idArticle']. '">'; 
+                echo '<h2>' . $art['titre'] . '</h2>';
+                echo '<p>Publié le ' . $art['datepub'] . '</p>';
+                echo '<p>' . $art['contenu'] . '...</p>';
+                echo '<p>by ' . $art['pseudo'] . '</p>';
+                echo '</a></div>';  
+            }
+            
+        } else{
+            echo '<div class="resultat_recherche"> Aucun Resultat </div>'; 
+        }
+    }else{
+        $stmt = $conn->prepare("SELECT a.idArticle, a.titre, a.datepub, SUBSTR(a.contenu, 1, 150) as contenu, u.pseudo FROM article");
+        $stmt->execute();
+
+        $article = $stmt->fetchAll();
         if(!empty($article)){
             foreach($article as $art){
                 echo '<div class="resultat_recherche"><a href="./article.php?idArticle=' . $art['idArticle']. '">'; 
