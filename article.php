@@ -22,7 +22,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         settype($_SESSION['idUser'], "integer");
         $idUserComment = $_SESSION['idUser'];
         $stmtInsertCommentaire->execute();
-        header("Location: article.php?idArticle=1");
+        header("Location: article.php?idArticle={$_SESSION['idArticleActuel']}");
         exit;
     }
     elseif(empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment'])){
@@ -43,7 +43,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             "DELETE FROM commentaire WHERE id_com = {$idComment}"
         );
         $stmtDeleteComment->execute();
-        header("Location: article.php?idArticle=1");
+        header("Location: article.php?idArticle={$_SESSION['idArticleActuel']}");
         exit;
     }
 }
