@@ -13,7 +13,7 @@
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
-    if ((!isset($_SESSION['user']) && empty($_SESSION['user'])) && basename($_SERVER['PHP_SELF']) !== 'login.php') {
+    if (!isset($_SESSION['user']) && empty($_SESSION['user']) &&  basename($_SERVER['PHP_SELF']) !== 'login.php' && basename($_SERVER['PHP_SELF']) !== 'mdp.php') {
         header('Location: login.php');
         exit();
     }
@@ -30,16 +30,18 @@
     <title>Bolg</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <header>
+<header>
         <div class="container">
-            <a href="<?php echo (basename($_SERVER['PHP_SELF']) === 'crud.php' ? '..' : '') ?>/index.php"><h1>Bolg</h1></a>
-            <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] !== 1){?>
+            <a href="<?php echo (basename($_SERVER['PHP_SELF']) === 'crud.php' ? '..' : '.') ?>/index.php"><h1>Bolg</h1></a>
+            <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === 1){?>
                 <a href="<?php echo (basename($_SERVER['PHP_SELF']) === 'crud.php' ? '.' : './admin') ?>/crud.php">crud</a>
             <?php } ?>
             <?php if (isset($_SESSION['user'])){?>
-                <a href="<?php echo (basename($_SERVER['PHP_SELF']) === 'crud.php' ? '..' : '') ?>/logout.php">Déconnexion</a>
+                <a href="<?php echo (basename($_SERVER['PHP_SELF']) === 'crud.php' ? '..' : '.') ?>/logout.php">Déconnexion</a>
             <?php } ?>
-            <a href="<?php echo (basename($_SERVER['PHP_SELF']) === 'crud.php' ? '..' : '') ?>/new.php">créer un article</a>
+            <a href="<?php echo (basename($_SERVER['PHP_SELF']) === 'crud.php' ? '..' : '.') ?>/new.php">créer un article</a>
         </div>
     </header>
+<body>
+    <main>
+    

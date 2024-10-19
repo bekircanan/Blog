@@ -4,55 +4,58 @@
     echo "<h2>Page de Connexion</h2>";
     $form = false;
     // regarde si les champs pseudo et mdp sont remplis
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['pseudo']) && isset($_POST['mdp'])&& !isset($_POST['email'])) {
-        compteCree:
-        $stmt = $conn->prepare("SELECT * FROM user WHERE pseudo = :pseudo");
-        $stmt->bindParam(':pseudo', $_POST['pseudo']);
-        $stmt->execute();
-        $user = $stmt->fetch();
-        // regarde si l'utilisateur existe et si le mot de passe est correct
-        if(strlen($_POST['pseudo'])<3 || strlen($_POST['pseudo'])>20){
-            echo "<p>Le pseudo doit contenir entre 3 et 20 caractères.</p>";
-        }elseif(strlen($_POST['mdp'])<3 || strlen($_POST['mdp'])>49){
-            echo "<p>Le mot de passe doit contenir entre 3 et 48 caractères.</p>";
-        }elseif ($user) {
-            if($_POST['mdp']===$user['mdp']){
-                $_SESSION['user'] = $user['pseudo'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['admin'] = $user['admin'];
-                $_SESSION['idUser'] = $user['idUser'];
-                header('Location: index.php');
-                exit();
-            }else{
-                echo "<p>Nom d'utilisateur ou mot de passe incorrect.</p>";
-            }
-        } elseif (!$user) {
-            echo "<p>Utilisateur non trouvé. Veuillez fournir votre adresse Email pour créer un compte.</p>";
-            $form = true;
-        }
-    // regarde si les champs pseudo, mdp et email sont remplis
-    } elseif (isset($_POST['email']) && isset($_POST['pseudo']) && isset($_POST['mdp'])) {
-        $stmt = $conn->prepare("SELECT * FROM user WHERE email = :email");
-        $stmt->bindParam(':email', $_POST['email']);
-        $stmt->execute();
-        $email = $stmt->fetch();
-
-        if ($email) {
-            echo "<p>L'adresse Email est déjà utilisée. Veuillez réessayer avec une autre adresse ou vous connecter.</p>";
-        } else {
-            $stmt = $conn->prepare("SELECT count(idUser) total FROM user");
-            $stmt->execute();
-            $iduser = $stmt->fetch();
-            $stmt = $conn->prepare("INSERT INTO user (pseudo, mdp, email, admin) VALUES (:pseudo, :mdp, :email, 0)");
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if(isset($_POST['pseudo']) && isset($_POST['mdp'])&& !isset($_POST['email'])){
+            compteCree:
+            $stmt = $conn->prepare("SELECT * FROM user WHERE pseudo = :pseudo");
             $stmt->bindParam(':pseudo', $_POST['pseudo']);
-            $stmt->bindParam(':mdp', $_POST['mdp']);
+            $stmt->execute();
+            $user = $stmt->fetch();
+            // regarde si l'utilisateur existe et si le mot de passe est correct
+            if((strlen($_POST['pseudo'])<3 || strlen($_POST['pseudo'])>20)){
+                echo "<p>Le pseudo doit contenir entre 3 et 20 caractères.</p>";
+            }elseif(strlen($_POST['mdp'])<3 || strlen($_POST['mdp'])>49){
+                echo "<p>Le mot de passe doit contenir entre 3 et 48 caractères.</p>";
+            }elseif ($user) {
+                if(password_verify($_POST['mdp'], $user['mdp'])){
+                    $_SESSION['user'] = $user['pseudo'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['admin'] = $user['admin'];
+                    $_SESSION['idUser'] = $user['idUser'];
+                    header('Location: index.php');
+                    exit();
+                }else{
+                    echo "<p>Nom d'utilisateur ou mot de passe incorrect.</p>";
+                }
+            } elseif (!$user) {
+                echo "<p>Utilisateur non trouvé. Veuillez fournir votre adresse Email pour créer un compte.</p>";
+                $form = true;
+            }
+        // regarde si les champs pseudo, mdp et email sont remplis
+        } elseif (isset($_POST['email']) && isset($_POST['pseudo']) && isset($_POST['mdp'])) {
+            $stmt = $conn->prepare("SELECT * FROM user WHERE email = :email");
             $stmt->bindParam(':email', $_POST['email']);
             $stmt->execute();
-            unset($_POST['email']);
-            goto compteCree;
+            $email = $stmt->fetch();
+
+            if ($email) {
+                echo "<p>L'adresse Email est déjà utilisée. Veuillez réessayer avec une autre adresse ou vous connecter.</p>";
+            } else {
+                $stmt = $conn->prepare("SELECT count(idUser) total FROM user");
+                $stmt->execute();
+                $iduser = $stmt->fetch();
+                $stmt = $conn->prepare("INSERT INTO user (pseudo, mdp, email, admin) VALUES (:pseudo, :mdp, :email, 0)");
+                $stmt->bindParam(':pseudo', $_POST['pseudo']);
+                $mdp= password_hash($_POST['mdp'], PASSWORD_DEFAULT);
+                $stmt->bindParam(':mdp', $mdp);
+                $stmt->bindParam(':email', $_POST['email']);
+                $stmt->execute();
+                unset($_POST['email']);
+                goto compteCree;
+            }
+        } else {
+            echo "<p>Veuillez remplir tous les champs du formulaire.</p>";
         }
-    } else {
-        echo "<p>Veuillez remplir tous les champs du formulaire.</p>";
     }
     // affiche le formulaire de connexion ou de création de compte
     if (!$form) {
@@ -66,6 +69,7 @@
         <br>
         <button type="submit">Connexion</button>
     </form>
+    <a style="color:red;text-decoration:none;" href='mdp.php'>Mot de passe oublié ?</a>
 <?php
     } else {
 ?>

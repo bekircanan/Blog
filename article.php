@@ -117,7 +117,9 @@ $stmtSelectAllComment = $conn->prepare(
                 <button type="submit" name="suppr_article">Supprimer l'article</button>
             </form>
         <?php
-        }
+            }
+
+            require_once 'footer.php';
         ?>
 
    

@@ -37,7 +37,7 @@ require_once 'header.php';
             echo '<div class="resultat_recherche"> Aucun Resultat </div>'; 
         }
     }else{
-        $stmt = $conn->prepare("SELECT a.idArticle, a.titre, a.datepub, SUBSTR(a.contenu, 1, 150) as contenu, u.pseudo FROM article");
+        $stmt = $conn->prepare("SELECT a.idArticle, a.titre, a.datepub, SUBSTR(a.contenu, 1, 150) as contenu, u.pseudo FROM article a JOIN user u ON a.iduser = u.iduser order by a.datepub asc");
         $stmt->execute();
 
         $article = $stmt->fetchAll();
