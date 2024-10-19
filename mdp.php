@@ -31,13 +31,19 @@ function smtp($email, $subject, $body){
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $stmt = $conn->prepare("SELECT idUser, pseudo FROM user WHERE email = :email");
-    $stmt->bindParam(':email', $_POST['email']);
+    $stmt = $conn->prepare("SELECT idUser FROM user WHERE email = ?");
+    $stmt->bindParam(1, $_POST['email']);
     $stmt->execute();
     $user = $stmt->fetch();
     if($user){
-        $token = bin2hex(random_bytes(32));
-        echo smtp($_POST['email'], 'Réinitialisation de mot de passe', 'Cliquez sur le lien suivant pour réinitialiser votre mot de passe: http://localhost/reset.php?token='.$token);
+        $token = bin2hex(random_bytes(16));
+        $expire = date('Y-m-d H:i:s', time() + 60 * 15);
+        $stmt = $conn->prepare("INSERT INTO token (nomtoken, expire, idUser) VALUES (?, ?, ?)");
+        $stmt->bindParam(1, $token);
+        $stmt->bindParam(2, $expire);
+        $stmt->bindParam(3, $user['idUser']);
+        $stmt->execute();
+        echo smtp($_POST['email'], 'Réinitialisation de mot de passe', 'Cliquez sur le lien suivant pour réinitialiser votre mot de passe: http://localhost/php/blog/reset.php?token='.$token);
     } else {
         echo 'Aucun compte n\'est associé à cet email.';
     }
@@ -45,6 +51,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 ?>
 
 <form method="Post">
+    <h1>Mot de passe oublié</h1>
+    <p>Entrez votre adresse email pour réinitialiser votre mot de passe.</p>
     <label for="email">Email:</label>
     <input type="email" name="email" required>
     <br>

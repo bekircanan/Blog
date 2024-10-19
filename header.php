@@ -13,7 +13,7 @@
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
-    if (!isset($_SESSION['user']) && empty($_SESSION['user']) &&  basename($_SERVER['PHP_SELF']) !== 'login.php' && basename($_SERVER['PHP_SELF']) !== 'mdp.php') {
+    if (!isset($_SESSION['user']) && empty($_SESSION['user']) &&  basename($_SERVER['PHP_SELF']) !== 'login.php' && basename($_SERVER['PHP_SELF']) !== 'mdp.php' && basename($_SERVER['PHP_SELF']) !== 'reset.php') {
         header('Location: login.php');
         exit();
     }
