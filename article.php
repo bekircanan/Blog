@@ -78,46 +78,57 @@ $stmtSelectAllComment = $conn->prepare(
 );
 
 ?>
-
-    <div class="info_article">
-        <h1><?php echo $titre?></h1>
-        Auteur : <?php echo $pseudo?> <br>
-        Mail : <?php echo $mail?> <br>
-        Date : <?php echo $date?> <br>
-    </div> 
-        <p><?php echo $contenu?></p>
-        Commentaires : <br>
-        <?php
-        $stmtSelectAllComment->execute();
-        foreach ($stmtSelectAllComment as $rows){
-            $_SESSION['idUserComment'] = $rows['idUser'];
-            $sql = "SELECT * from user where iduser = {$_SESSION['idUserComment']}";
-            $result = $conn->query($sql);
-            $row2 = $result->fetch();
-            $pseudo2 = $row2['pseudo'];
-            echo $pseudo2."<br>".$rows['date']."<br>";
-            echo $rows['message']."<br>";
-            if($pseudo2 === $_SESSION['user']){
-                ?>
-                <form action = "article.php" method = "post">
-                    <button name = "suppr_comment" type="submit" value = "<?php echo $rows['id_com'];?>">Supprimer le commentaire.</button>
-                </form> 
-                <?php
-            }
-        }
-        ?>
-
-        <form action = "article.php" method="post">
-            <textarea name="new_comment" rows="5" required></textarea>
-
-            <button type="submit">Commenter</button>
-        </form>
-        <?php if ($_SESSION['user'] === $pseudo){
-            ?><form action="article.php" method="post">
+    <section id="article">
+            <h1><?php echo $titre?></h1>
+            <p>Auteur : <?php echo $pseudo?> </p>
+            <p>Mail : <?php echo $mail?> </p>
+            <p>Date : <?php echo $date?> </p>
+            <p><?php echo $contenu?></p>
+        
+        <?php if ($_SESSION['user'] === $pseudo){?>
+            <form id="supprimer_article" method="post">
                 <button type="submit" name="suppr_article">Supprimer l'article</button>
             </form>
+        <?php }?>
+
+    </section>
+
+    <form action = "article.php" method="post">
+        <h3>Laisser un commentaire :</h3>
+        <textarea name="new_comment" rows="5" required></textarea>
+
+        <button type="submit">Commenter</button>
+    </form>
+
+    <section class="affichage_commentaire">
+        <h3> Commentaires : </h3>
+    
+            <?php
+                $stmtSelectAllComment->execute();
+                foreach ($stmtSelectAllComment as $rows){
+                    $_SESSION['idUserComment'] = $rows['idUser'];
+                    $sql = "SELECT * from user where iduser = {$_SESSION['idUserComment']}";
+                    $result = $conn->query($sql);
+                    $row2 = $result->fetch();
+                    $pseudo2 = $row2['pseudo'];
+                    echo '<div class="affichage_commentaire">';
+                    echo "<p>" . $pseudo2 . "</p>". "<p>" . $rows['date']. "</p>";
+                    echo "<p>" . $rows['message']."</p>";
+                    if($pseudo2 === $_SESSION['user']){
+                        ?>
+                        <form action = "article.php" method = "post">
+                            <button name = "suppr_comment" type="submit" value = "<?php echo $rows['id_com'];?>">Supprimer le commentaire.</button>
+                        </form> 
+                        <?php
+                    }
+                    echo '</div>';
+                }
+            ?>
+        
+    </section>
+
         <?php
-            }
+            
 
             require_once 'footer.php';
         ?>

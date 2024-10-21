@@ -12,7 +12,7 @@
             $stmt->execute();
             $user = $stmt->fetch();
             $stmt = $conn->prepare("INSERT INTO article (contenu, titre, idUser) VALUES ( :contenu, :titre, :user)");
-            $stmt->bindParam(':contenu', $_POST['contenu']);
+            $stmt->bindParam(':contenu', nl2br($_POST['contenu']));
             $stmt->bindParam(':titre', $_POST['titre']);
             $stmt->bindParam(':user', $user['idUser']);
             $stmt->execute();
