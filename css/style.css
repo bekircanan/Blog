@@ -265,3 +265,6 @@ form button.boutton_crud{
     text-align: right;
 }
 
+.erreur{
+    color:red;
+}
