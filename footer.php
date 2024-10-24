@@ -1,6 +1,6 @@
             </main>
         </body>
     <footer>
-        <p>&copy; <?php echo date("Y"); ?> Anime Blog.</p>
+        <p>&copy; <?php echo date("Y"); ?> Blog.</p>
     </footer>
 </html>

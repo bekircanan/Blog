@@ -33,8 +33,8 @@
             }
         // regarde si les champs pseudo, mdp et email sont remplis
         } elseif (isset($_POST['email']) && isset($_POST['pseudo']) && isset($_POST['mdp'])) {
-            $stmt = $conn->prepare("SELECT * FROM user WHERE email = :email");
-            $stmt->bindParam(':email', $_POST['email']);
+            $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
+            $stmt->bindParam(1, $_POST['email']);
             $stmt->execute();
             $email = $stmt->fetch();
 
@@ -44,13 +44,12 @@
                 $stmt = $conn->prepare("SELECT count(idUser) total FROM user");
                 $stmt->execute();
                 $iduser = $stmt->fetch();
-                $stmt = $conn->prepare("INSERT INTO user (pseudo, mdp, email, admin) VALUES (:pseudo, :mdp, :email, 0)");
-                $stmt->bindParam(':pseudo', $_POST['pseudo']);
+                $stmt = $conn->prepare("INSERT INTO user (pseudo, mdp, email, admin) VALUES (?, ?, ?, 0)");
+                $stmt->bindParam(1, $_POST['pseudo']);
                 $mdp= password_hash($_POST['mdp'], PASSWORD_DEFAULT);
-                $stmt->bindParam(':mdp', $mdp);
-                $stmt->bindParam(':email', $_POST['email']);
+                $stmt->bindParam(2, $mdp);
+                $stmt->bindParam(3, $_POST['email']);
                 $stmt->execute();
-                unset($_POST['email']);
                 goto compteCree;
             }
         } else {
