@@ -3,9 +3,7 @@ require_once 'header.php';
 $idComment=0;
 
 
-$stmtSelectMaxIdComm = $conn->prepare(
-    "SELECT max(id_com) as max_id_com from commentaire"
-);
+
 $stmtInsertCommentaire = $conn->prepare(
     "INSERT INTO commentaire (message, idUser, idArticle) VALUES ( ?, ?, ?)"
 );
@@ -13,10 +11,17 @@ $stmtInsertCommentaire->bindParam(1,$new_comment);
 $stmtInsertCommentaire->bindParam(2,$idUserComment);
 $stmtInsertCommentaire->bindParam(3,$idArticle);
 
+$stmtInsertFavoris = $conn->prepare("INSERT INTO favoris (idArticle, idUser) VALUES (?, ?)");
+$stmtInsertFavoris->bindParam(1,$newIdArticle);
+$stmtInsertFavoris->bindParam(2,$newIdUser);
+
+
+
+
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     
-    if (!empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment'])){
-        
+    if (!empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment']) and !isset($_POST['ajouter_fav'])){
+        /* On se place ici dans le cas où un utilisateur ajoute un commentaire à l'article.*/
         $new_comment = $_POST['new_comment'];
         $idArticle = $_SESSION['idArticleActuel'];
         settype($_SESSION['idUser'], "integer");
@@ -25,10 +30,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         header("Location: article.php?idArticle={$_SESSION['idArticleActuel']}");
         exit;
     }
-    elseif(empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment'])){
+    elseif(empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment']) and !isset($_POST['ajouter_fav'])){
+        /* Le cas où l'utilisateur n'a pas rempli le champ du commentaire mais cliqué sur le bouton. */
         echo "Renseignez d'abord un commentaire.";
     }
-    elseif(!isset($_POST['suppr_comment'])){
+    elseif(!isset($_POST['suppr_comment']) and !isset($_POST['ajouter_fav'])){
+        /* Le cas où le créateur de l'article décide de supprimer son article. */
         $stmtDeleteArticle = $conn->prepare(
             "DELETE FROM article WHERE idArticle = {$_SESSION['idArticleActuel']}"
         );
@@ -37,7 +44,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         header("Location: index.php");
         exit;
     }
-    else{
+    elseif(!isset($_POST['ajouter_fav'])){
+        /* Le cas où le créateur du commentaire décide de supprimer son commentaire. */
         $idComment = $_POST['suppr_comment'];
         $stmtDeleteComment= $conn->prepare(
             "DELETE FROM commentaire WHERE id_com = {$idComment}"
@@ -46,15 +54,28 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         header("Location: article.php?idArticle={$_SESSION['idArticleActuel']}");
         exit;
     }
+    else{
+        /* La dernier cas, lorsque un utilisateur quelconque a décidé d'ajouter l'article à ses favoris. */
+        $newIdArticle = $_SESSION['idArticleActuel'];
+        $newIdUser = $_SESSION['idUser'];
+        $stmtInsertFavoris->execute();
+        header("Location: article.php?idArticle={$_SESSION['idArticleActuel']}");
+        exit;
+        
+    }
 }
 elseif($_SERVER['REQUEST_METHOD'] == 'GET'){
+    /* On ne passera qu'une fois dans cette boucle, lorsque l'on arrivera sur la page via la page d'acceuill ou la page Mes favoris. */
     $_SESSION['idArticleActuel'] = $_GET['idArticle'];
 }
 
-
+/* Requête permettant de tester si l'utilisateur actuel a déjà ajouter l'article a ses favoris. */
+$stmtTestFavoris = $conn->prepare("SELECT * FROM favoris WHERE idUser = {$_SESSION['idUser']} AND idArticle = {$_SESSION['idArticleActuel']}");
 $stmtSelectArticle = $conn->prepare(
     "SELECT * from article where idArticle = {$_SESSION['idArticleActuel']}"
 );
+
+
 $stmtSelectArticle->execute();
 foreach($stmtSelectArticle as $rows){
     $titre = $rows['titre'];
@@ -68,10 +89,7 @@ $stmtSelectUserArticle = $conn->prepare(
     "SELECT * from user where iduser = {$idUser}"
 );
 $stmtSelectUserArticle->execute();
-foreach($stmtSelectUserArticle as $rows){
-    $mail = $rows['email'];
-    $pseudo = $rows['pseudo'];
-}
+$infoCrea = $stmtSelectUserArticle->fetch();
 
 $stmtSelectAllComment = $conn->prepare(
     "SELECT * FROM commentaire WHERE idArticle = {$_SESSION['idArticleActuel']} order by date desc"
@@ -80,12 +98,24 @@ $stmtSelectAllComment = $conn->prepare(
 ?>
     <section id="article">
             <h1><?php echo $titre?></h1>
-            <p>Auteur : <?php echo $pseudo?> </p>
-            <p>Mail : <?php echo $mail?> </p>
+            <?php
+                $stmtTestFavoris->execute();
+                $alreadyfav = $stmtTestFavoris->fetch();
+                /* On test ici si l'utilisateur à déjà ajouté l'article à ses favoris afin de ne pas afficher le bouton dans le cas positif. */
+                if(empty($alreadyfav)){?>
+                <form id="ajouter_favoris" method="post">
+                    <button type="submit" name="ajouter_fav">Ajouter aux favoris</button>
+                </form><?php
+
+                }
+            ?>
+            <p>Auteur : <?php echo $infoCrea['pseudo']?> </p>
+            <p>Mail : <?php echo $infoCrea['email']?> </p>
             <p>Date : <?php echo $date?> </p>
             <p><?php echo $contenu?></p>
+            
         
-        <?php if ($_SESSION['user'] === $pseudo){?>
+        <?php if ($_SESSION['user'] === $infoCrea['pseudo']){?>
             <form id="supprimer_article" method="post">
                 <button type="submit" name="suppr_article">Supprimer l'article</button>
             </form>
