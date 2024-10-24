@@ -35,6 +35,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $stmt->bindParam(1, $_POST['email']);
     $stmt->execute();
     $user = $stmt->fetch();
+    // si l'utilisateur existe, on crée un token et on l'envoie par mail
     if($user){
         $token = bin2hex(random_bytes(16));
         $expire = date('Y-m-d H:i:s', time() + 60 * 15);

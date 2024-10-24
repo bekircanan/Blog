@@ -1,6 +1,5 @@
 <?php
-require_once 'header.php';
-    
+require_once 'header.php';  
 ?>
 <form method="GET">
     <input name="recherche" type="text"></input>

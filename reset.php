@@ -6,8 +6,9 @@
     $stmt->execute();
     $user = $stmt->fetch();
     if($user){
-        
+        // Vérification de la validité du token
         if($_SERVER['REQUEST_METHOD'] === 'POST' && strtotime($user['expire']) > time()){
+            // Vérification de la validité du mot de passe
             if($_POST['mdp'] !== $_POST['mdp2']){
                 $error = 'Les mots de passe ne correspondent pas.';
             }else{
