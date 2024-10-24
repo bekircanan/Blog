@@ -1,8 +1,8 @@
 <?php
     require_once 'header.php';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if(strlen($_POST['titre'])>50){
-            $error = 'Le titre doit contenir moins de 50 caractères.';
+        if(strlen($_POST['titre'])>150){
+            $error = 'Le titre doit contenir moins de 150 caractères.';
         }elseif (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['categorie'])) {
             foreach ($_POST['categorie'] as $categorie) {
                 echo "cat".$categorie;
@@ -37,7 +37,7 @@
         <p style="color: red;font-weight: bold;"><?php echo $error; ?></p>
     <?php endif; ?>
     <label for="titre">Titre:</label>
-    <input type="text" id="titre" name="titre" maxlength="50" value="<?php echo (isset($_POST['titre']) && !empty($_POST['titre'])? $_POST['titre'] : "" ) ?>" required><br><br>
+    <input type="text" id="titre" name="titre" maxlength="150" value="<?php echo (isset($_POST['titre']) && !empty($_POST['titre'])? $_POST['titre'] : "" ) ?>" required><br><br>
     
     <label for="contenu">contenu:</label>
     <textarea id="contenu" name="contenu" rows="10" required><?php echo (isset($_POST['contenu']) && !empty($_POST['contenu'])? $_POST['contenu'] : "" ) ?></textarea><br><br>
