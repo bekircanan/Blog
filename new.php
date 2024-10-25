@@ -7,18 +7,18 @@
             foreach ($_POST['categorie'] as $categorie) {
                 echo "cat".$categorie;
             }
-            $stmt = $conn->prepare("SELECT idUser FROM user WHERE pseudo = :pseudo");
+            $stmt = $conn->prepare("SELECT id_user FROM user WHERE pseudo = :pseudo");
             $stmt->bindParam(':pseudo', $_SESSION['user']);
             $stmt->execute();
             $user = $stmt->fetch();
-            $stmt = $conn->prepare("INSERT INTO article (contenu, titre, idUser) VALUES ( :contenu, :titre, :user)");
+            $stmt = $conn->prepare("INSERT INTO article (contenu, titre, id_user) VALUES ( :contenu, :titre, :user)");
             $stmt->bindParam(':contenu', nl2br($_POST['contenu']));
             $stmt->bindParam(':titre', $_POST['titre']);
             $stmt->bindParam(':user', $user['idUser']);
             $stmt->execute();
             $id = $conn->lastInsertId();
             foreach($_POST['categorie'] as $categorie){
-                $stmt = $conn->prepare("INSERT INTO article_categorie (idCategorie,idArticle) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO article_categorie (idCategorie,id_article) VALUES (?, ?)");
                 $stmt->bindParam(1, $categorie);
                 $stmt->bindParam(2, $id);
                 $stmt->execute();
@@ -49,7 +49,7 @@
         $stmt->execute();
         $categories = $stmt->fetchAll();
         foreach ($categories as $categorie) {
-            echo '<input type="checkbox" id="'.$categorie['idCategorie'].'" name="categorie[]" value="'.$categorie['idCategorie'].'">'.$categorie['nomCategorie'].'</input>';
+            echo '<input type="checkbox" id="'.$categorie['id_categorie'].'" name="categorie[]" value="'.$categorie['id_categorie'].'">'.$categorie['nom_categorie'].'</input>';
         }
     ?>
     </div>

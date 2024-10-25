@@ -7,8 +7,8 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST['pseudo']) && isset($_POST['mdp'])&& !isset($_POST['email'])){
             compteCree:
-            $stmt = $conn->prepare("SELECT * FROM user WHERE pseudo = :pseudo");
-            $stmt->bindParam(':pseudo', $_POST['pseudo']);
+            $stmt = $conn->prepare("SELECT * FROM user WHERE pseudo = ?");
+            $stmt->bindParam(1, $_POST['pseudo']);
             $stmt->execute();
             $user = $stmt->fetch();
             // regarde si l'utilisateur existe et si le mot de passe est correct
@@ -21,7 +21,7 @@
                     $_SESSION['user'] = $user['pseudo'];
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['admin'] = $user['admin'];
-                    $_SESSION['idUser'] = $user['idUser'];
+                    $_SESSION['idUser'] = $user['id_user'];
                     header('Location: index.php');
                     exit();
                 }else{
@@ -41,9 +41,6 @@
             if ($email) {
                 echo "<p>L'adresse Email est déjà utilisée. Veuillez réessayer avec une autre adresse ou vous connecter.</p>";
             } else {
-                $stmt = $conn->prepare("SELECT count(idUser) total FROM user");
-                $stmt->execute();
-                $iduser = $stmt->fetch();
                 $stmt = $conn->prepare("INSERT INTO user (pseudo, mdp, email, admin) VALUES (?, ?, ?, 0)");
                 $stmt->bindParam(1, $_POST['pseudo']);
                 $mdp= password_hash($_POST['mdp'], PASSWORD_DEFAULT);

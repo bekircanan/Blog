@@ -1,7 +1,7 @@
 <?php
     require_once 'header.php';
     $token = $_GET['token'];
-    $stmt = $conn->prepare("SELECT idUser,expire FROM token WHERE nomtoken = :token");
+    $stmt = $conn->prepare("SELECT id_user,expire FROM token WHERE nom_token = :token");
     $stmt->bindParam(':token', $token);
     $stmt->execute();
     $user = $stmt->fetch();
@@ -14,9 +14,9 @@
             }else{
                 $stmt = $conn->prepare("UPDATE user SET mdp = :mdp WHERE idUser = :idUser");
                 $stmt->bindParam(':mdp', password_hash($_POST['mdp'], PASSWORD_DEFAULT));
-                $stmt->bindParam(':idUser', $user['idUser']);
+                $stmt->bindParam(':idUser', $user['id_user']);
                 $stmt->execute();
-                $stmt = $conn->prepare("DELETE FROM token WHERE nomtoken = :token");
+                $stmt = $conn->prepare("DELETE FROM token WHERE nom_token = :token");
                 $stmt->bindParam(':token', $token);
                 $stmt->execute();
                 header('Location: index.php');
