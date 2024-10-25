@@ -5,13 +5,13 @@ $idComment=0;
 
 
 $stmtInsertCommentaire = $conn->prepare(
-    "INSERT INTO commentaire (message, id_user, idArticle) VALUES ( ?, ?, ?)"
+    "INSERT INTO commentaire (message, id_user, id_article) VALUES ( ?, ?, ?)"
 );
 $stmtInsertCommentaire->bindParam(1,$new_comment);
 $stmtInsertCommentaire->bindParam(2,$idUserComment);
 $stmtInsertCommentaire->bindParam(3,$idArticle);
 
-$stmtInsertFavoris = $conn->prepare("INSERT INTO favoris (idArticle, id_user) VALUES (?, ?)");
+$stmtInsertFavoris = $conn->prepare("INSERT INTO favoris (id_article, id_user) VALUES (?, ?)");
 $stmtInsertFavoris->bindParam(1,$newIdArticle);
 $stmtInsertFavoris->bindParam(2,$newIdUser);
 
@@ -27,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         settype($_SESSION['idUser'], "integer");
         $idUserComment = $_SESSION['idUser'];
         $stmtInsertCommentaire->execute();
-        header("Location: article.php?idArticle={$_SESSION['idArticleActuel']}");
+        header("Location: article.php?id_article={$_SESSION['idArticleActuel']}");
         exit;
     }
     elseif(empty($_POST['new_comment']) and !isset($_POST['suppr_article']) and !isset($_POST['suppr_comment']) and !isset($_POST['ajouter_fav'])){
@@ -51,7 +51,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             "DELETE FROM commentaire WHERE id_com = {$idComment}"
         );
         $stmtDeleteComment->execute();
-        header("Location: article.php?id_Article={$_SESSION['idArticleActuel']}");
+        header("Location: article.php?id_article={$_SESSION['idArticleActuel']}");
         exit;
     }
     else{
@@ -59,29 +59,29 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $newIdArticle = $_SESSION['idArticleActuel'];
         $newIdUser = $_SESSION['idUser'];
         $stmtInsertFavoris->execute();
-        header("Location: article.php?id_Article={$_SESSION['idArticleActuel']}");
+        header("Location: article.php?id_article={$_SESSION['idArticleActuel']}");
         exit;
         
     }
 }
 elseif($_SERVER['REQUEST_METHOD'] == 'GET'){
     /* On ne passera qu'une fois dans cette boucle, lorsque l'on arrivera sur la page via la page d'acceuill ou la page Mes favoris. */
-    $_SESSION['idArticleActuel'] = $_GET['id_Article'];
+    $_SESSION['idArticleActuel'] = $_GET['id_article'];
 }
 
 /* Requête permettant de tester si l'utilisateur actuel a déjà ajouter l'article a ses favoris. */
-$stmtTestFavoris = $conn->prepare("SELECT * FROM favoris WHERE idUser = {$_SESSION['idUser']} AND idArticle = {$_SESSION['idArticleActuel']}");
+$stmtTestFavoris = $conn->prepare("SELECT * FROM favoris WHERE id_user = {$_SESSION['idUser']} AND id_article = {$_SESSION['idArticleActuel']}");
 $stmtSelectArticle = $conn->prepare(
-    "SELECT * from article where id_Article = {$_SESSION['idArticleActuel']}"
+    "SELECT * from article where id_article = {$_SESSION['idArticleActuel']}"
 );
 
 
 $stmtSelectArticle->execute();
 foreach($stmtSelectArticle as $rows){
     $titre = $rows['titre'];
-    $date = $rows['datePub'];
+    $date = $rows['date_pub'];
     $contenu = $rows['contenu'];
-    $idUser = $rows['idUser'];
+    $idUser = $rows['id_user'];
 }
 
 
@@ -162,7 +162,3 @@ $stmtSelectAllComment = $conn->prepare(
 
             require_once 'footer.php';
         ?>
-
-   
-
-

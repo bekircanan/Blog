@@ -9,7 +9,7 @@
         if(!empty($_POST['nomajoutCat'])){
             //requette sql pour ajouter une categorie 
 
-            $stmt = $conn->prepare("INSERT INTO categorie (nomcategorie) VALUES (:categorie)");
+            $stmt = $conn->prepare("INSERT INTO categorie (nom_categorie) VALUES (:categorie)");
             
             $stmt->execute([':categorie' => $_POST['nomajoutCat']]);
 
@@ -19,7 +19,7 @@
     }elseif(isset($_POST['suppCat']) and !isset($_POST['ajoutCat']) and !isset($_POST['modifCat'])){
         if(isset($_POST['radioCat'])){
             //requette sql pour supprimer une categorie 
-            $stmt = $conn->prepare("DELETE FROM categorie WHERE idcategorie = :categorie");
+            $stmt = $conn->prepare("DELETE FROM categorie WHERE id_categorie = :categorie");
             
             $stmt->execute([':categorie' => intval($_POST['radioCat'])]);
 
@@ -30,7 +30,7 @@
         if(isset($_POST['radioCat']) and !empty($_POST['modifCat'])){
             
             //requette sql pour modifier une categorie 
-            $stmt = $conn->prepare("UPDATE categorie SET nomcategorie = :newCategorie WHERE idCategorie = :categorieid");
+            $stmt = $conn->prepare("UPDATE categorie SET nom_categorie = :newCategorie WHERE id_categorie = :categorieid");
             
             $stmt->execute([':newCategorie' => $_POST['modifCat'], ':categorieid' => intval($_POST['radioCat']) ]);
         }else{
@@ -39,7 +39,7 @@
     }
 
     /*Requette SQL pour récupérer les catégories existantes*/
-    $stmt = $conn->query("SELECT idCategorie, nomcategorie FROM Categorie");  
+    $stmt = $conn->query("SELECT id_categorie, no_mcategorie FROM Categorie");  
     $stmt->execute();
     $categories = $stmt->fetchAll();
     

@@ -8,7 +8,7 @@
     //affichage des articles de l'utilisateur
     if(!empty($articles)){
         foreach($articles as $article){
-            echo '<div><a href="./article.php?idArticle=' . $article['id_article']. '">'; 
+            echo '<div><a href="./article.php?id_article=' . $article['id_article']. '">'; 
             echo '<h2>' . $article['titre'] . '</h2>';
             echo '<p>Publié le ' . $article['date_pub'] . '</p>';
             echo '<p>' . $article['contenu'] . '...</p>';

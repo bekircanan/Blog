@@ -14,11 +14,11 @@
             $stmt = $conn->prepare("INSERT INTO article (contenu, titre, id_user) VALUES ( :contenu, :titre, :user)");
             $stmt->bindParam(':contenu', nl2br($_POST['contenu']));
             $stmt->bindParam(':titre', $_POST['titre']);
-            $stmt->bindParam(':user', $user['idUser']);
+            $stmt->bindParam(':user', $user['id_user']);
             $stmt->execute();
             $id = $conn->lastInsertId();
             foreach($_POST['categorie'] as $categorie){
-                $stmt = $conn->prepare("INSERT INTO article_categorie (idCategorie,id_article) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO article_categorie (id_categorie,id_article) VALUES (?, ?)");
                 $stmt->bindParam(1, $categorie);
                 $stmt->bindParam(2, $id);
                 $stmt->execute();
