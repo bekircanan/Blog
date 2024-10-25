@@ -97,28 +97,34 @@ $stmtSelectAllComment = $conn->prepare(
 
 ?>
     <section id="article">
-            <h1><?php echo $titre?></h1>
-            <?php
-                $stmtTestFavoris->execute();
-                $alreadyfav = $stmtTestFavoris->fetch();
-                /* On test ici si l'utilisateur à déjà ajouté l'article à ses favoris afin de ne pas afficher le bouton dans le cas positif. */
-                if(empty($alreadyfav)){?>
-                <form id="ajouter_favoris" method="post">
-                    <button type="submit" name="ajouter_fav">Ajouter aux favoris</button>
-                </form><?php
-
-                }
-            ?>
-            <p>Auteur : <?php echo $infoCrea['pseudo']?> </p>
-            <p>Mail : <?php echo $infoCrea['email']?> </p>
-            <p>Date : <?php echo $date?> </p>
-            <p><?php echo $contenu?></p>
-            
+        <h1><?php echo $titre?></h1>
         
-        <?php if ($_SESSION['user'] === $infoCrea['pseudo']){?>
-            <form id="supprimer_article" method="post">
-                <button type="submit" name="suppr_article">Supprimer l'article</button>
-            </form>
+        <p>Auteur : <?php echo $infoCrea['pseudo']?> </p>
+        <p>Mail : <?php echo $infoCrea['email']?> </p>
+        <p>Date : <?php echo $date?> </p>
+        <p><?php echo $contenu?></p>
+        
+        <?php 
+            $stmtTestFavoris->execute();
+            $alreadyfav = $stmtTestFavoris->fetch();
+            /* On test ici si l'utilisateur à déjà ajouté l'article à ses favoris afin de ne pas afficher le bouton dans le cas positif. */
+            if(empty($alreadyfav)){
+        ?>
+
+        <form id="ajouter_favoris" method="post">
+            <button type="submit" name="ajouter_fav">Ajouter aux favoris</button>
+        </form>
+
+        <?php }?>
+
+        <?php
+            if ($_SESSION['user'] === $infoCrea['pseudo']){
+        ?>
+
+        <form id="supprimer_article" method="post">
+            <button type="submit" name="suppr_article">Supprimer l'article</button>
+        </form>
+
         <?php }?>
 
     </section>

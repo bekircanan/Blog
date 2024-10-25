@@ -39,7 +39,7 @@
     }
 
     /*Requette SQL pour récupérer les catégories existantes*/
-    $stmt = $conn->query("SELECT id_categorie, no_mcategorie FROM Categorie");  
+    $stmt = $conn->query("SELECT id_categorie, nom_categorie FROM Categorie");  
     $stmt->execute();
     $categories = $stmt->fetchAll();
     
@@ -58,7 +58,7 @@
             
             /*affichage des catégories*/
             foreach($categories as $cate){
-                echo '<input name="radioCat" value="'. $cate['idCategorie'] .'" type="radio">'. $cate['nomcategorie'] .'</input>';   
+                echo '<input name="radioCat" value="'. $cate['id_categorie'] .'" type="radio">'. $cate['nom_categorie'] .'</input>';   
             }
         ?>
         
@@ -75,7 +75,7 @@
 
         /*affichage des catégories*/
         foreach($categories as $cate){
-            echo '<input name="radioCat" value="'. $cate['idCategorie'] .'" type="radio">'. $cate['nomcategorie'] .'</input>';   
+            echo '<input name="radioCat" value="'. $cate['id_categorie'] .'" type="radio">'. $cate['nom_categorie'] .'</input>';   
         }
         ?>
         <button class="boutton_crud" name="suppCat" type='submit'>supprimer</button>
