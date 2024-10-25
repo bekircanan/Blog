@@ -3,7 +3,8 @@ require_once 'header.php';
 ?>
 <form method="GET">
     <input name="recherche" type="text"></input>
-    <button type='submit'>Recherche</button>
+    <br>
+    <button id="recherche" type='submit'>Recherche</button>   
 </form>
 
 <?php
@@ -27,16 +28,16 @@ require_once 'header.php';
 
         if(!empty($article)){
             foreach($article as $art){
-                echo '<div class="resultat_recherche"><a href="./article.php?id_article=' . $art['id_article']. '">'; 
-                echo '<h2>' . $art['titre'] . '</h2>';
+                echo '<div class="afficher_article background"><a href="./article.php?id_article=' . $art['id_article']. '">'; 
+                echo '<h1>' . $art['titre'] . '</h1>';
                 echo '<p>Publié le ' . $art['date_pub'] . '</p>';
                 echo '<p>' . $art['contenu'] . '...</p>';
-                echo '<p>by ' . $art['pseudo'] . '</p>';
+                echo '<p>Auteur : ' . $art['pseudo'] . '</p>';
                 echo '</a></div>';  
             }
             
         } else{
-            echo '<div class="resultat_recherche"> Aucun Resultat </div>'; 
+            echo '<div class="background"><h2>Aucun Resultat</h2></div>'; 
         }
     }else{
         $stmt = $conn->prepare("SELECT a.id_article, a.titre, a.date_pub, SUBSTR(a.contenu, 1, 150) as contenu, u.pseudo FROM article a JOIN user u ON a.id_user = u.id_user order by a.date_pub asc limit 5");
@@ -45,16 +46,16 @@ require_once 'header.php';
         $article = $stmt->fetchAll();
         if(!empty($article)){
             foreach($article as $art){
-                echo '<div class="resultat_recherche"><a href="./article.php?id_article=' . $art['id_article']. '">'; 
-                echo '<h2>' . $art['titre'] . '</h2>';
+                echo '<div class="afficher_article background"><a href="./article.php?id_article=' . $art['id_article']. '">'; 
+                echo '<h1>' . $art['titre'] . '</h1>';
                 echo '<p>Publié le ' . $art['date_pub'] . '</p>';
                 echo '<p>' . $art['contenu'] . '...</p>';
-                echo '<p>by ' . $art['pseudo'] . '</p>';
+                echo '<p>Auteur : ' . $art['pseudo'] . '</p>';
                 echo '</a></div>';  
             }
             
         } else{
-            echo '<div class="resultat_recherche"> Aucun Resultat </div>'; 
+            echo '<div class="background"><h2>Aucun Resultat</h2></div>'; 
         }
     }
         

@@ -1,7 +1,7 @@
 <?php
     require 'header.php';
     echo "<div class='login-container'>";
-    echo "<h2>Page de Connexion</h2>";
+    echo "<h1>Connexion</h1>";
     $form = false;
     // regarde si les champs pseudo et mdp sont remplis
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -58,14 +58,15 @@
 ?>
     <form method="post">
         <label for="pseudo">Pseudo: </label>
-        <input type="text" id="pseudo" name="pseudo" maxlength='20' required>
+        <input type="text" name="pseudo" maxlength='20' required>
         <br>
         <label for="mdp">Mot de passe: </label>
-        <input type="password" id="mdp" name="mdp" maxlength='48' required>
+        <input type="password" name="mdp" maxlength='48' required>
+        <a class="erreur" href='mdp.php'>Mot de passe oublié ?</a>
         <br>
         <button type="submit">Connexion</button>
     </form>
-    <a style="color:red;text-decoration:none;" href='mdp.php'>Mot de passe oublié ?</a>
+    
 <?php
     } else {
 ?>
@@ -73,7 +74,8 @@
         <input type='hidden' name='pseudo' value='<?php echo $_POST['pseudo'] ?>'>
         <input type='hidden' name='mdp' value='<?php echo $_POST['mdp'] ?>'>
         <label for='email'>Email: </label>
-        <input type='email' id='email' name='email' required>
+        <input type='email' name='email' required>
+        <br>    
         <button type='submit'>Créer un compte</button>
     </form>
 <?php
