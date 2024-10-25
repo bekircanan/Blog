@@ -7,29 +7,29 @@ require_once 'header.php';
 <?php
         
         //requette sql pour chercher les articles par rapport au pseudo,titre et catégorie
-        $stmt = $conn->prepare("SELECT a.idArticle, a.titre, a.datepub, SUBSTR(a.contenu, 1, 150) as contenu
-                                FROM user u JOIN favoris f ON u.idUser = f.idUser 
-                                               JOIN article a ON f.idArticle = a.idArticle
-                                WHERE u.idUser = {$_SESSION['idUser']} order by a.datepub asc");
+        $stmt = $conn->prepare("SELECT a.id_article, a.titre, a.date_pub, SUBSTR(a.contenu, 1, 150) as contenu
+                                FROM user u JOIN favoris f ON u.id_user = f.id_user 
+                                               JOIN article a ON f.id_article = a.id_article
+                                WHERE u.id_user = {$_SESSION['idUser']} order by a.date_pub asc");
         
         $stmt->execute();
         $article = $stmt->fetchAll();
 
         if(!empty($article)){
             foreach($article as $art){
-                $stmt2 = $conn->prepare("SELECT pseudo from user u JOIN article a ON u.idUser = a.idUser WHERE idArticle = {$art['idArticle']}");
+                $stmt2 = $conn->prepare("SELECT pseudo from user u JOIN article a ON u.idUser = a.idUser WHERE id_article = {$art['id_article']}");
                 $stmt2->execute();
                 $pseudoCrea = $stmt2->fetch();
-                echo '<div class="resultat_recherche"><a href="./article.php?idArticle=' . $art['idArticle']. '">'; 
+                echo '<div><a href="./article.php?id_article=' . $art['id_article']. '">'; 
                 echo '<h2>' . $art['titre'] . '</h2>';
-                echo '<p>Publié le ' . $art['datepub'] . '</p>';
+                echo '<p>Publié le ' . $art['date_pub'] . '</p>';
                 echo '<p>' . $art['contenu'] . '...</p>';
                 echo '<p>by ' . $pseudoCrea['pseudo'] . '</p>';
                 echo '</a></div>';  
             }
             
         } else{
-            echo '<div class="resultat_recherche"> Aucun Favoris pour le moment. </div>'; 
+            echo '<div> Aucun Favoris pour le moment. </div>'; 
         }
         
        

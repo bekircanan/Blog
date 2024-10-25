@@ -8,14 +8,14 @@
     //affichage des articles de l'utilisateur
     if(!empty($articles)){
         foreach($articles as $article){
-            echo '<div class="resultat_recherche"><a href="./article.php?idArticle=' . $article['id_article']. '">'; 
+            echo '<div><a href="./article.php?idArticle=' . $article['id_article']. '">'; 
             echo '<h2>' . $article['titre'] . '</h2>';
             echo '<p>Publié le ' . $article['date_pub'] . '</p>';
             echo '<p>' . $article['contenu'] . '...</p>';
             echo '</a></div>';  
         }
     }else{
-        echo '<div class="resultat_recherche"> Aucun Resultat </div>';
+        echo '<div> Aucun article publié </div>';
     }
     require_once 'footer.php';
 ?>
