@@ -1,5 +1,6 @@
 <?php
     require_once 'header.php';
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(strlen($_POST['titre'])>150){
             $error = 'Le titre doit contenir moins de 150 caractères.';
@@ -34,26 +35,31 @@
 <form method="post">
     <h1>Créer un article</h1>
     <?php if (isset($error)): ?>
-        <p style="color: red;font-weight: bold;"><?php echo $error; ?></p>
+        <p class="erreur"><?php echo $error; ?></p>
     <?php endif; ?>
-    <label for="titre">Titre:</label>
-    <input type="text" id="titre" name="titre" maxlength="150" value="<?php echo (isset($_POST['titre']) && !empty($_POST['titre'])? $_POST['titre'] : "" ) ?>" required><br><br>
+    <h3>Titre:</h3>
+    <input type="text" name="titre" maxlength="150" placeholder="Titre" value="<?php echo (isset($_POST['titre']) && !empty($_POST['titre'])? $_POST['titre'] : "" ) ?>" required><br><br>
     
-    <label for="contenu">contenu:</label>
-    <textarea id="contenu" name="contenu" rows="10" required><?php echo (isset($_POST['contenu']) && !empty($_POST['contenu'])? $_POST['contenu'] : "" ) ?></textarea><br><br>
+    <h3>Contenu:</h3>
+    <textarea name="contenu" rows="10"  placeholder="..." required><?php echo (isset($_POST['contenu']) && !empty($_POST['contenu'])? $_POST['contenu'] : "" ) ?></textarea><br><br>
     
-    <div>
-        <label for="categorie">Catégorie:</label>
-    <?php
-        $stmt = $conn->prepare("SELECT * FROM categorie");
-        $stmt->execute();
-        $categories = $stmt->fetchAll();
-        foreach ($categories as $categorie) {
-            echo '<input type="checkbox" id="'.$categorie['id_categorie'].'" name="categorie[]" value="'.$categorie['id_categorie'].'">'.$categorie['nom_categorie'].'</input>';
-        }
-    ?>
+    <h3>Catégorie:</h3>
+    <br>
+    <div class="checkbox">  
+        
+        <?php
+            $stmt = $conn->prepare("SELECT * FROM categorie");
+            $stmt->execute();
+            $categories = $stmt->fetchAll();
+            foreach ($categories as $categorie) {
+                echo '<input type="checkbox" id="'.$categorie['id_categorie'].'" name="categorie" value="'.$categorie['id_categorie'].'"></input>';
+                
+                echo '<label for="'.$categorie['id_categorie'].'">' . $categorie['nom_categorie'] . '</label>';
+            }
+        ?>
     </div>
-    <input type="submit" value="Submit">
+    <br>
+    <button type="submit">Valider</button>
 </form>
 <?php
     require_once 'footer.php';

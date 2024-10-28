@@ -55,29 +55,37 @@
             if($erreurModif){
                 echo '<p class="erreur">Selectionner une catégorie et entrez un nouveau nom</p>';
             }
-            
+        ?> 
+        <div class="checkbox">
+        <?php
             /*affichage des catégories*/
             foreach($categories as $cate){
                 echo '<input name="radioCat" value="'. $cate['id_categorie'] .'" type="radio">'. $cate['nom_categorie'] .'</input>';   
             }
         ?>
+        </div>
         
         <input type="text" name="modifCat" placeholder="Nouveau nom">
+        <br>
         <button class="boutton_crud" name="modifier" type="submit">Modifier</button>
     </form>
 
     <form method="POST">
-    <?php 
-        /*Message d'erreur*/
-        if($erreurSupp){
-            echo '<p class="erreur">Selectionner une catégorie</p>';
-        }
-
-        /*affichage des catégories*/
-        foreach($categories as $cate){
-            echo '<input name="radioCat" value="'. $cate['id_categorie'] .'" type="radio">'. $cate['nom_categorie'] .'</input>';   
-        }
+        <?php 
+            /*Message d'erreur*/
+            if($erreurSupp){
+                echo '<p class="erreur">Selectionner une catégorie</p>';
+            }
         ?>
+        <div class="checkbox">
+            <?php 
+                /*affichage des catégories*/
+                foreach($categories as $cate){
+                    echo '<input name="radioCat" value="'. $cate['id_categorie'] .'" type="radio">'. $cate['nom_categorie'] .'</input>';   
+                }
+            ?>
+        </div>
+        <br>
         <button class="boutton_crud" name="suppCat" type='submit'>supprimer</button>
     </form>
 
@@ -90,6 +98,7 @@
         ?>
 
         <input name="nomajoutCat" type="text" placeholder="Nom"></input>
+        <br>
         <button class="boutton_crud" name="ajoutCat" type='submit'>ajouter</button>
     </form>
 

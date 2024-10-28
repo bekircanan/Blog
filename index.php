@@ -2,7 +2,7 @@
 require_once 'header.php';  
 ?>
 <form method="GET">
-    <input name="recherche" type="text"></input>
+    <input name="recherche" type="text" placeholder="Recherhce par titre, auteur et catégorie"></input>
     <br>
     <button id="recherche" type='submit'>Recherche</button>   
 </form>

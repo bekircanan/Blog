@@ -39,7 +39,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if($user){
         $token = bin2hex(random_bytes(16));
         $expire = date('Y-m-d H:i:s', time() + 60 * 15);
-        $stmt = $conn->prepare("INSERT INTO token (nomtoken, expire, id_user) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO token (nom_token, expire, id_user) VALUES (?, ?, ?)");
         $stmt->bindParam(1, $token);
         $stmt->bindParam(2, $expire);
         $stmt->bindParam(3, $user['id_user']);

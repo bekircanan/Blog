@@ -140,7 +140,7 @@ $stmtSelectAllComment = $conn->prepare(
 
     <form method="post">
         <h3>Laisser un commentaire :</h3>
-        <textarea name="new_comment" rows="5" required></textarea>
+        <textarea name="new_comment" rows="5" placeholder="..." required></textarea>
         <br>
         <button type="submit" name="commenter">Commenter</button>
     </form>
