@@ -2,7 +2,7 @@
 require_once 'header.php';
 use PHPMailer\PHPMailer\PHPMailer;
 require '.\vendor\autoload.php';
-
+$errlog = '';
 function smtp($email, $subject, $body){
     $mail = new PHPMailer();
     $mail->IsSMTP(); 
@@ -44,9 +44,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $stmt->bindParam(2, $expire);
         $stmt->bindParam(3, $user['id_user']);
         $stmt->execute();
-        echo smtp($_POST['email'], 'Réinitialisation de mot de passe', 'Cliquez sur le lien suivant pour réinitialiser votre mot de passe: http://localhost/php/blog/reset.php?token='.$token);
+        $errlog = smtp($_POST['email'], 'Réinitialisation de mot de passe', 'Cliquez sur le lien suivant pour réinitialiser votre mot de passe: http://localhost/php/blog/reset.php?token='.$token);
     } else {
-        echo 'Aucun compte n\'est associé à cet email.';
+        $errlog ='Aucun compte n\'est associé à cet email.';
     }
 }
 ?>
@@ -54,6 +54,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <form method="Post">
     <h1>Mot de passe oublié</h1>
     <p>Entrez votre adresse email pour réinitialiser votre mot de passe.</p>
+    <?php echo '<p>'.$errlog.'</p>'; ?>
     <label for="email">Email:</label>
     <input type="email" name="email" required>
     <br>

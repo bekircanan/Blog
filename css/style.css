@@ -247,10 +247,8 @@ div.afficher_article:hover{
     font-weight: bold;
 }
 .checkbox{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 10% 1fr 10% 1fr;
 }
 
 .boutton_crud{

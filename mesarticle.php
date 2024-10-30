@@ -29,7 +29,7 @@
             echo '<p>' . $article['contenu'] . '...</p></a>';
     ?>
             <form class="suppr_article" method="post">
-                <button type="submit" name="suppr_article" value="<?php echo $article['id_article'];?>">Supprimer des favoris</button>
+                <button type="submit" name="suppr_article" value="<?php echo $article['id_article'];?>">Supprimer l'article</button>
             </form>
     <?php
             echo '</div>';  
