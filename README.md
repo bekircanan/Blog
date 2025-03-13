@@ -9,10 +9,8 @@ This project is a blog created using PHP, HTML, CSS, and JavaScript. It was deve
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Directory Structure](#directory-structure)
 - [Contributing](#contributing)
 - [Team Members](#team-members)
-- [License](#license)
 
 ## Introduction
 
