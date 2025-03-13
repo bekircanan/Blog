@@ -12,8 +12,8 @@ function smtp($email, $subject, $body){
     $mail->Port = 587;
     $mail->isHTML(true);
     $mail->CharSet = 'UTF-8';
-    $mail->Username = "bolg.mdp@gmail.com";
-    $mail->Password = "igmbkulkriqskwey";
+    $mail->Username = "email";
+    $mail->Password = "password";
     $mail->AddAddress($email);
     $mail->SetFrom("bolg.mdp@gmail.com");
     $mail->Subject = $subject;
